@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ORIGEN — Dossier Institucional</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Montserrat -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Configuración de Tailwind para la identidad de Origen -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'origen-bg': '#f9f6ef',      // Fondo Cálido / Arena
+                        'origen-text': '#352c2d',    // Negro Profundo / Marrón
+                        'origen-cyan': '#02adc3',    // Verde/Cian del logo (Acento Principal 1)
+                        'origen-red': '#e42320',     // Rojo del logo (Acento Principal 2)
+                    },
+                    fontFamily: {
+                        'sans': ['Montserrat', 'sans-serif'],
+                    },
+                    letterSpacing: {
+                        'widest': '.25em',
+                        'superwide': '.4em',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Estilos Base */
+        body {
+            background-color: #f9f6ef;
+            color: #352c2d;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        /* Scroll Snap para navegación estilo Dossier/Presentación */
+        .snap-container {
+            height: 100vh;
+            overflow-y: scroll;
+            scroll-snap-type: y mandatory;
+            scroll-behavior: smooth;
+        }
+
+        .dossier-page {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 5rem 2rem;
+            position: relative;
+            scroll-snap-align: start;
+            scroll-snap-stop: always;
+        }
+
+        .container-custom {
+            max-width: 950px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* --- Símbolo SVG de Fallback de Origen --- */
+        .fallback-logo {
+            width: 160px;
+            height: 160px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        /* --- Transiciones de Revelación (Scroll Reveal) --- */
+        .reveal-element {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        .reveal-element.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .delay-100 { transition-delay: 100ms; }
+        .delay-200 { transition-delay: 200ms; }
+        .delay-300 { transition-delay: 300ms; }
+        .delay-400 { transition-delay: 400ms; }
+
+        /* --- Menú Lateral de Puntos (Dots) --- */
+        #nav-dots {
+            position: fixed;
+            right: 25px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            z-index: 50;
+        }
+
+        .nav-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #02adc3; /* Verde/Cian */
+            opacity: 0.5;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .nav-dot.active, .nav-dot:hover {
+            background-color: #e42320; /* Rojo */
+            opacity: 1;
+            transform: scale(1.4);
+        }
+
+        /* Ocultar barra de scroll estética */
+        ::-webkit-scrollbar {
+            width: 0px;
+            background: transparent;
+        }
+
+        /* Efecto de transición para los Casos de Éxito */
+        .case-tab {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .case-tab.active-tab {
+            background-color: #352c2d;
+            color: #f9f6ef;
+            border-color: #352c2d;
+        }
+    </style>
+</head>
+
+<body class="font-sans font-light text-origen-text leading-relaxed">
+
+    <!-- Menú lateral dinámico -->
+    <div id="nav-dots" class="hidden md:flex"></div>
+
+    <!-- Contenedor Principal con Scroll Snap -->
+    <main class="snap-container w-full" id="main-container">
+
+        <!-- PÁGINA 1: PORTADA -->
+        <section class="dossier-page text-center" id="portada">
+            <div class="container-custom flex flex-col items-center justify-center">
+                <!-- Contenedor de Logo con fallback inteligente -->
+                <div class="mb-16 reveal-element flex flex-col items-center">
+                    <img src="Origen_logo.png" alt="ORIGEN" class="max-w-[220px] h-auto object-contain rounded-full shadow-sm" onerror="this.style.display='none'; document.getElementById('logo-fallback-portada').style.display='block';">
+                    
+                    <!-- Versión dibujada circular en caso de que la imagen falle -->
+                    <div id="logo-fallback-portada" class="fallback-logo hidden">
+                        <svg viewBox="0 0 200 200" class="w-full h-full">
+                            <circle cx="100" cy="100" r="95" stroke="#02adc3" stroke-width="1.5" fill="none" opacity="0.4"/>
+                            <!-- Semicírculo inferior -->
+                            <path d="M 30 130 A 70 70 0 0 0 170 130 Z" fill="#352c2d"/>
+                            <!-- Línea vertical central -->
+                            <line x1="100" y1="50" x2="100" y2="130" stroke="#352c2d" stroke-width="3"/>
+                            <!-- Círculo Verde/Cian -->
+                            <circle cx="100" cy="55" r="10" fill="#02adc3"/>
+                            <!-- Punto rojo superior -->
+                            <circle cx="100" cy="30" r="5" fill="#e42320"/>
+                        </svg>
+                    </div>
+                    
+                    <!-- Título separado con margen generoso -->
+                    <h1 class="block text-3xl font-semibold tracking-superwide uppercase mt-12 text-origen-text">ORIGEN</h1>
+                </div>
+                
+                <!-- Subtítulo despegado -->
+                <p class="text-xs md:text-sm tracking-widest uppercase mb-20 mt-4 text-origen-cyan font-medium reveal-element delay-100">Estrategia para empresas reales</p>
+                
+                <div class="mt-8 reveal-element delay-200">
+                    <p class="text-2xl md:text-4xl font-light mb-3 text-origen-text opacity-90">Orden para entender.</p>
+                    <p class="text-2xl md:text-4xl font-light text-origen-text opacity-90">Claridad para decidir.</p>
+                </div>
+
+                <!-- Indicador visual de scroll -->
+                <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce opacity-50">
+                    <svg class="w-6 h-6 text-origen-red" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+                    </svg>
+                </div>
+            </div>
+        </section>
+
+        <!-- PÁGINA 2: APERTURA EMOCIONAL -->
+        <section class="dossier-page bg-white" id="apertura">
+            <div class="container-custom px-6 md:px-0">
+                <h2 class="text-2xl md:text-4xl font-medium mb-12 leading-tight max-w-3xl text-origen-text reveal-element">
+                    Cuando todo depende de unas pocas personas,<br> 
+                    <span class="text-origen-red font-light">la empresa se vuelve pesada.</span>
+                </h2>
+                
+                <div class="space-y-6 text-base md:text-lg max-w-3xl text-gray-600 reveal-element delay-100">
+                    <p>
+                        Muchas pymes crecen a fuerza de esfuerzo, experiencia y compromiso. Pero en el camino empiezan a aparecer señales que desgastan la operación y frenan el crecimiento:
+                    </p>
+                    
+                    <ul class="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-8 my-8 border-l-2 border-origen-cyan pl-6 ml-2">
+                        <li class="flex items-center">
+                            <span class="w-2 h-2 rounded-full bg-origen-cyan mr-3"></span>
+                            <span>Decisiones urgentes diarias.</span>
+                        </li>
+                        <li class="flex items-center">
+                            <span class="w-2 h-2 rounded-full bg-origen-cyan mr-3"></span>
+                            <span>Conflictos repetitivos entre áreas.</span>
+                        </li>
+                        <li class="flex items-center">
+                            <span class="w-2 h-2 rounded-full bg-origen-cyan mr-3"></span>
+                            <span>Roles y responsabilidades poco claros.</span>
+                        </li>
+                        <li class="flex items-center">
+                            <span class="w-2 h-2 rounded-full bg-origen-cyan mr-3"></span>
+                            <span>Dependencia excesiva del dueño.</span>
+                        </li>
+                        <li class="flex items-center">
+                            <span class="w-2 h-2 rounded-full bg-origen-cyan mr-3"></span>
+                            <span>Sobrecarga operativa constante.</span>
+                        </li>
+                        <li class="flex items-center">
+                            <span class="w-2 h-2 rounded-full bg-origen-cyan mr-3"></span>
+                            <span>Crecimiento sin estructura de soporte.</span>
+                        </li>
+                    </ul>
+                    
+                    <p class="italic text-gray-500 text-sm">
+                        Y aunque muchas veces "todo funciona", sostener la inercia diaria cuesta cada vez más.
+                    </p>
+                </div>
+                
+                <div class="mt-16 reveal-element delay-200">
+                    <div class="border-t border-gray-100 pt-6 inline-block">
+                        <p class="text-xl md:text-2xl font-light text-origen-text">
+                            El problema no suele ser la falta de capacidad.<br>
+                            <span class="font-medium text-origen-red">Suele ser la falta de estructura visible.</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PÁGINA 3: QUÉ HACE ORIGEN -->
+        <section class="dossier-page" id="que-hacemos">
+            <div class="container-custom px-6 md:px-0">
+                <p class="text-xs tracking-widest uppercase text-origen-cyan mb-4 font-semibold reveal-element">Propósito</p>
+                
+                <h2 class="text-2xl md:text-4xl font-light mb-12 leading-tight reveal-element delay-100">
+                    Hacemos visible lo que hoy está <span class="font-medium">desordenado, implícito o concentrado</span> en pocas personas.
+                </h2>
+                
+                <p class="text-lg md:text-xl mb-8 max-w-2xl text-gray-600 reveal-element delay-200">
+                    Luego, construimos estructura funcional a medida para que la empresa pueda:
+                </p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6 mb-16 text-base md:text-lg">
+                    <div class="flex items-start reveal-element delay-200">
+                        <span class="text-origen-red font-bold mr-3">—</span>
+                        <span>Organizarse con criterios funcionales claros</span>
+                    </div>
+                    <div class="flex items-start reveal-element delay-200">
+                        <span class="text-origen-red font-bold mr-3">—</span>
+                        <span>Delegar tareas operativas con tranquilidad</span>
+                    </div>
+                    <div class="flex items-start reveal-element delay-300">
+                        <span class="text-origen-red font-bold mr-3">—</span>
+                        <span>Reducir roces y optimizar la comunicación</span>
+                    </div>
+                    <div class="flex items-start reveal-element delay-300">
+                        <span class="text-origen-red font-bold mr-3">—</span>
+                        <span>Tomar decisiones basadas en datos e indicadores</span>
+                    </div>
+                    <div class="flex items-start reveal-element delay-400">
+                        <span class="text-origen-red font-bold mr-3">—</span>
+                        <span>Sostener el crecimiento de nuevas líneas</span>
+                    </div>
+                    <div class="flex items-start reveal-element delay-400">
+                        <span class="text-origen-red font-bold mr-3">—</span>
+                        <span>Profesionalizar procesos sin perder la esencia pyme</span>
+                    </div>
+                </div>
+                
+                <div class="reveal-element delay-400 bg-white p-6 rounded-sm border-l-4 border-origen-cyan max-w-3xl">
+                    <p class="text-lg font-light text-origen-text">
+                        No trabajamos desde soluciones mágicas o plantillas rígidas.<br>
+                        <strong class="font-medium text-origen-red">Trabajamos desde la realidad operativa de tu empresa.</strong>
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- PÁGINA 4: PARA QUIÉN ES ORIGEN -->
+        <section class="dossier-page bg-origen-text text-origen-bg" id="para-quien">
+            <div class="container-custom px-6 md:px-0">
+                <p class="text-xs tracking-widest uppercase text-origen-cyan mb-8 font-semibold reveal-element">Público Objetivo</p>
+                
+                <h2 class="text-2xl md:text-4xl mb-12 font-light text-white leading-snug reveal-element delay-100">
+                    Acompañamos principalmente a pymes productivas e industriales en marcha que:
+                </h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6 text-base md:text-lg font-light mb-16 opacity-90">
+                    <div class="border-b border-gray-700 pb-4 flex items-start reveal-element delay-100">
+                        <span class="text-origen-cyan mr-3">✔</span>
+                        <span>Crecieron rápido y la estructura quedó desbordada.</span>
+                    </div>
+                    <div class="border-b border-gray-700 pb-4 flex items-start reveal-element delay-100">
+                        <span class="text-origen-cyan mr-3">✔</span>
+                        <span>Tienen estructura familiar en pleno traspaso de generación.</span>
+                    </div>
+                    <div class="border-b border-gray-700 pb-4 flex items-start reveal-element delay-200">
+                        <span class="text-origen-cyan mr-3">✔</span>
+                        <span>Dependen en exceso del dueño para la operación diaria.</span>
+                    </div>
+                    <div class="border-b border-gray-700 pb-4 flex items-start reveal-element delay-200">
+                        <span class="text-origen-cyan mr-3">✔</span>
+                        <span>Sufren conflictos o cuellos de botella entre sectores.</span>
+                    </div>
+                    <div class="border-b border-gray-700 pb-4 flex items-start reveal-element delay-300">
+                        <span class="text-origen-cyan mr-3">✔</span>
+                        <span>Incorporaron nueva maquinaria o líneas de productos y falló la coordinación.</span>
+                    </div>
+                    <div class="border-b border-gray-700 pb-4 flex items-start reveal-element delay-300">
+                        <span class="text-origen-cyan mr-3">✔</span>
+                        <span>Desean ordenar la administración y conectarla con planta.</span>
+                    </div>
+                </div>
+                
+                <div class="reveal-element delay-400">
+                    <p class="text-2xl md:text-3xl tracking-wide font-light">
+                        Empresas <strong class="font-medium text-white">reales</strong>. Con problemas <strong class="font-medium text-origen-red">reales</strong>.<br>
+                        Y necesidad de soluciones <strong class="font-medium text-origen-cyan">aplicables</strong>.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- PÁGINAS 5 Y 6: CÓMO TRABAJAMOS -->
+        <section class="dossier-page bg-white" id="metodologia">
+            <div class="container-custom px-6 md:px-0">
+                <div class="mb-12 reveal-element">
+                    <p class="text-xs tracking-widest uppercase text-origen-cyan mb-3 font-semibold">Método</p>
+                    <h2 class="text-2xl md:text-4xl font-light text-origen-text">Eje metodológico en 4 etapas</h2>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
+                    <div class="border border-origen-bg p-6 rounded-sm hover:border-origen-cyan transition-all duration-300 reveal-element delay-100">
+                        <span class="text-origen-red text-xl font-bold block mb-3">01. Diagnóstico Estructural</span>
+                        <p class="text-gray-600 text-sm font-light leading-relaxed">
+                            Analizamos cómo funciona hoy la empresa desde adentro: realizamos entrevistas, mapeo de procesos, flujos de toma de decisiones y detectamos dónde están las trabas.
+                        </p>
+                    </div>
+                    
+                    <div class="border border-origen-bg p-6 rounded-sm hover:border-origen-cyan transition-all duration-300 reveal-element delay-100">
+                        <span class="text-origen-red text-xl font-bold block mb-3">02. Orden Organizacional</span>
+                        <p class="text-gray-600 text-sm font-light leading-relaxed">
+                            Diseñamos la estructura a medida: definimos roles específicos, jerarquías de coordinación, mallas horarias eficientes y un organigrama aplicable para el día a día.
+                        </p>
+                    </div>
+                    
+                    <div class="border border-origen-bg p-6 rounded-sm hover:border-origen-cyan transition-all duration-300 reveal-element delay-200">
+                        <span class="text-origen-red text-xl font-bold block mb-3">03. Implementación Activa</span>
+                        <p class="text-gray-600 text-sm font-light leading-relaxed">
+                            No nos quedamos en informes. Te acompañamos en el terreno (planta o administración) cuerpo a cuerpo, resolviendo resistencias y ajustando el método a tu realidad.
+                        </p>
+                    </div>
+                    
+                    <div class="border border-origen-bg p-6 rounded-sm hover:border-origen-cyan transition-all duration-300 reveal-element delay-200">
+                        <span class="text-origen-red text-xl font-bold block mb-3">04. Autonomía y Consolidación</span>
+                        <p class="text-gray-600 text-sm font-light leading-relaxed">
+                            Construimos tableros de control visual e instruimos a tus referentes internos para que el sistema de mejora se sostenga solo en el tiempo.
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="mt-12 text-center reveal-element delay-300 border-t border-origen-bg pt-8">
+                    <p class="text-lg md:text-xl font-light text-origen-text">
+                        La mejora continua no se sostiene sola en un papel.<br>
+                        <span class="font-medium text-origen-red">Necesita estructura, criterio y acompañamiento presencial.</span>
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- PÁGINA 7: QUÉ CAMBIA -->
+        <section class="dossier-page" id="que-cambia">
+            <div class="container-custom px-6 md:px-0">
+                <p class="text-xs tracking-widest uppercase text-origen-cyan mb-3 font-semibold reveal-element">Resultados</p>
+                <h2 class="text-2xl md:text-4xl font-light mb-12 text-origen-text reveal-element delay-100">La transformación cuando trabajamos juntos</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 mb-12">
+                    <div class="bg-white p-6 shadow-sm rounded-sm border-l-2 border-origen-cyan reveal-element delay-100">
+                        <h4 class="font-medium text-origen-text mb-2">Liberación de la Dirección</h4>
+                        <p class="text-sm text-gray-600">El dueño sale de la operación reactiva diaria ("apagar incendios") y recupera tiempo estratégico para pensar el negocio.</p>
+                    </div>
+                    <div class="bg-white p-6 shadow-sm rounded-sm border-l-2 border-origen-cyan reveal-element delay-100">
+                        <h4 class="font-medium text-origen-text mb-2">Claridad en Roles</h4>
+                        <p class="text-sm text-gray-600">Cada operario, supervisor y administrativo sabe con precisión qué debe hacer, cómo se mide su trabajo y dónde termina su límite funcional.</p>
+                    </div>
+                    <div class="bg-white p-6 shadow-sm rounded-sm border-l-2 border-origen-cyan reveal-element delay-200">
+                        <h4 class="font-medium text-origen-text mb-2">Coordinación de Sectores</h4>
+                        <p class="text-sm text-gray-600">Eliminación de silos informativos. La planta y la administración hablan el mismo idioma gracias a flujos de datos interconectados.</p>
+                    </div>
+                    <div class="bg-white p-6 shadow-sm rounded-sm border-l-2 border-origen-cyan reveal-element delay-200">
+                        <h4 class="font-medium text-origen-text mb-2">Reducción de Pérdidas</h4>
+                        <p class="text-sm text-gray-600">Sistemas visuales (5S, tableros Kamishibai) que exponen de inmediato desvíos de calidad, stock innecesario y retrabajos costosos.</p>
+                    </div>
+                </div>
+
+                <div class="bg-origen-text text-origen-bg p-6 rounded-sm text-center reveal-element delay-300">
+                    <p class="text-lg md:text-xl font-light">
+                        Ordenar no es burocratizar ni rigidizar la empresa.<br>
+                        <span class="font-medium text-origen-red">Es darle la base sostenible que necesita para crecer en paz.</span>
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- CASOS REALES INTERACTIVOS (SECCIÓN COMPLETA DE CASOS) -->
+        <section class="dossier-page bg-origen-bg" id="casos-reales">
+            <div class="container-custom px-6 md:px-0">
+                <div class="mb-6 reveal-element">
+                    <p class="text-xs tracking-widest uppercase text-origen-cyan mb-1 font-semibold">Experiencia Aplicada</p>
+                    <h2 class="text-2xl md:text-3xl font-light uppercase text-origen-text tracking-wide inline-block">Casos Reales de Éxito</h2>
+                    <span class="text-xs ml-3 text-gray-500 italic block sm:inline mt-1 sm:mt-0">(Selecciona un caso para explorar su estructura y gráfico interactivo)</span>
+                </div>
+
+                <!-- Tabs de Casos de Éxito -->
+                <div class="flex overflow-x-auto pb-2 mb-6 gap-2 border-b border-gray-200" id="cases-tab-headers">
+                    <button class="case-tab active-tab px-4 py-2 text-xs font-semibold tracking-wider uppercase border border-gray-300 rounded-sm whitespace-nowrap hover:border-origen-red" onclick="switchCase(0)">Satelital / Nuclear</button>
+                    <button class="case-tab px-4 py-2 text-xs font-semibold tracking-wider uppercase border border-gray-300 rounded-sm whitespace-nowrap hover:border-origen-red" onclick="switchCase(1)">Salud Kaizen</button>
+                    <button class="case-tab px-4 py-2 text-xs font-semibold tracking-wider uppercase border border-gray-300 rounded-sm whitespace-nowrap hover:border-origen-red" onclick="switchCase(2)">Relevamiento Pyme</button>
+                    <button class="case-tab px-4 py-2 text-xs font-semibold tracking-wider uppercase border border-gray-300 rounded-sm whitespace-nowrap hover:border-origen-red" onclick="switchCase(3)">Layout Eléctrico</button>
+                    <button class="case-tab px-4 py-2 text-xs font-semibold tracking-wider uppercase border border-gray-300 rounded-sm whitespace-nowrap hover:border-origen-red" onclick="switchCase(4)">Nube Construcción</button>
+                    <button class="case-tab px-4 py-2 text-xs font-semibold tracking-wider uppercase border border-gray-300 rounded-sm whitespace-nowrap hover:border-origen-red" onclick="switchCase(5)">Control Neumática</button>
+                </div>
+
+                <!-- Área Dinámica de Visualización del Caso -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 bg-white p-6 md:p-8 rounded-sm shadow-sm" id="case-viewer">
+                    
+                    <!-- Información del Caso -->
+                    <div class="lg:col-span-7 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center gap-3 mb-3">
+                                <span class="bg-origen-cyan text-white text-[10px] font-bold px-2 py-0.5 rounded-sm uppercase tracking-wider" id="case-meta-rubro">Rubro</span>
+                                <span class="text-xs text-gray-500" id="case-meta-loc">Ubicación</span>
+                            </div>
+                            
+                            <h3 class="text-xl md:text-2xl font-medium mb-4 text-origen-text leading-snug" id="case-title">Cargando caso...</h3>
+                            
+                            <div class="space-y-4">
+                                <div>
+                                    <h4 class="text-xs font-bold uppercase tracking-widest text-origen-text border-l-2 border-origen-red pl-2 mb-1">Situación Inicial / Problema</h4>
+                                    <p class="text-sm text-gray-600 font-light" id="case-problem">Descripción...</p>
+                                </div>
+                                <div>
+                                    <h4 class="text-xs font-bold uppercase tracking-widest text-origen-cyan border-l-2 border-origen-cyan pl-2 mb-1">Estrategia / Transformación</h4>
+                                    <p class="text-sm text-gray-600 font-light" id="case-transformation">Descripción...</p>
+                                </div>
+                                <div>
+                                    <h4 class="text-xs font-bold uppercase tracking-widest text-white bg-origen-text px-2 py-0.5 inline-block rounded-sm mb-1">Impacto</h4>
+                                    <p class="text-sm text-origen-text font-medium" id="case-impact">Descripción...</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-6 pt-4 border-t border-gray-100 flex items-center justify-between text-xs text-gray-500">
+                            <span>Duración: <strong id="case-meta-duration" class="font-medium">12 meses</strong></span>
+                            <span>Método clave: <strong id="case-meta-key" class="font-medium text-origen-cyan">5S / Kaizen</strong></span>
+                        </div>
+                    </div>
+
+                    <!-- Representación Visual Interactiva -->
+                    <div class="lg:col-span-5 flex flex-col justify-center items-center bg-origen-bg p-4 rounded-sm border border-gray-100 min-h-[300px]">
+                        <span class="text-[10px] font-bold tracking-widest text-gray-400 uppercase mb-3">Esquema Técnico Interactivo</span>
+                        
+                        <div class="w-full h-full flex items-center justify-center" id="case-interactive-graphic">
+                            <!-- Inserción dinámica por JS -->
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- PÁGINA 11: SOBRE ORIGEN -->
+        <section class="dossier-page bg-white text-center" id="sobre-nosotros">
+            <div class="container-custom px-6 md:px-0">
+                <!-- Símbolo circular del logo con fallback -->
+                <div class="mb-8 reveal-element">
+                    <img src="Origen_circular.png" alt="Símbolo Origen" class="mx-auto max-w-[100px] h-auto object-contain rounded-full shadow-sm" onerror="this.style.display='none'; document.getElementById('symbol-fallback').style.display='block';">
+                    <div id="symbol-fallback" class="fallback-logo hidden">
+                        <svg viewBox="0 0 200 200" class="w-24 h-24 mx-auto">
+                            <circle cx="100" cy="100" r="85" stroke="#02adc3" stroke-width="2" fill="none" opacity="0.5"/>
+                            <path d="M 30 130 A 70 70 0 0 0 170 130 Z" fill="#352c2d"/>
+                            <line x1="100" y1="50" x2="100" y2="130" stroke="#352c2d" stroke-width="3"/>
+                            <circle cx="100" cy="55" r="10" fill="#02adc3"/>
+                            <circle cx="100" cy="30" r="5" fill="#e42320"/>
+                        </svg>
+                    </div>
+                </div>
+                
+                <h2 class="text-3xl md:text-5xl font-light mb-12 tracking-wide text-origen-text reveal-element delay-100">La historia con los<br><span class="font-medium text-origen-red">pies en la tierra.</span></h2>
+                
+                <div class="max-w-2xl mx-auto space-y-6 text-base md:text-lg font-light text-gray-600 text-left md:text-center reveal-element delay-200">
+                    <p>
+                        Origen nace después de años trabajando dentro de empresas industriales y productivas reales.
+                    </p>
+                    <p>
+                        No desde la comodidad de modelos teóricos ideales o manuales académicos de consultoría corporativa tradicional. Sino desde la experiencia empírica de acompañar a organizaciones atravesadas por el crecimiento acelerado, el desorden logístico y la necesidad crítica de evolución estructural.
+                    </p>
+                    <p class="font-medium text-origen-text">
+                        Nuestra mirada integra estrategia aplicada, mejora continua pragmática, sensibilidad hacia la historia de cada pyme y una comprensión directa de la realidad productiva argentina.
+                    </p>
+                </div>
+                
+                <div class="mt-16 pt-8 border-t border-gray-100 reveal-element delay-300">
+                    <p class="text-lg md:text-xl font-medium text-origen-cyan italic">
+                        "Porque ninguna mejora de procesos sirve si no puede ser sostenida por el personal en su realidad de todos los días."
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- PÁGINA 12: CIERRE Y CTA -->
+        <section class="dossier-page bg-origen-text text-origen-bg" id="contacto">
+            <div class="container-custom px-6 md:px-0 flex flex-col justify-center min-h-[85vh]">
+                
+                <div class="text-center md:text-left mb-12 reveal-element">
+                    <h2 class="text-3xl md:text-5xl font-light leading-tight mb-6">
+                        Muchas empresas no<br>necesitan trabajar más.<br>
+                        <span class="font-medium text-origen-red">Necesitan trabajar con más claridad.</span>
+                    </h2>
+                    
+                    <p class="text-base md:text-lg font-light max-w-2xl text-gray-400 leading-relaxed">
+                        Si sentís que tu empresa creció pero la estructura actual no acompaña, coordinemos una primera charla. Evaluamos tu situación y diseñamos una base para ordenar lo que ya construiste.
+                    </p>
+                </div>
+                
+                <div class="bg-[#2a2324] p-8 md:p-10 rounded-sm border-l-4 border-origen-cyan reveal-element delay-100">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 border-b border-gray-800 pb-4">
+                        <div>
+                            <span class="block text-[10px] tracking-widest text-origen-cyan uppercase mb-1">Acompañamiento Estratégico</span>
+                            <h3 class="text-2xl md:text-3xl font-medium text-white">Conversemos.</h3>
+                        </div>
+                        <span class="text-xs text-gray-400 mt-2 sm:mt-0">Origen Consultora © 2026</span>
+                    </div>
+                    
+                    <!-- Información de contacto directa -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-y-6 gap-x-8 text-left">
+                        <div>
+                            <span class="block text-[10px] tracking-widest text-gray-500 uppercase mb-1">Escríbenos</span>
+                            <a href="mailto:origen.equipoba@gmail.com" class="text-sm font-medium text-white hover:text-origen-cyan transition-colors">origen.equipoba@gmail.com</a>
+                        </div>
+                        <div>
+                            <span class="block text-[10px] tracking-widest text-gray-500 uppercase mb-1">WhatsApp</span>
+                            <a href="https://wa.me/5492364303605" target="_blank" class="text-sm font-medium text-white hover:text-origen-cyan transition-colors">+54 9 236 4 303605</a>
+                        </div>
+                        <div>
+                            <span class="block text-[10px] tracking-widest text-gray-500 uppercase mb-1">Sitio Web</span>
+                            <a href="https://origenconsultora.com" target="_blank" class="text-sm font-medium text-white hover:text-origen-cyan transition-colors">origenconsultora.com</a>
+                        </div>
+                        <div>
+                            <span class="block text-[10px] tracking-widest text-gray-500 uppercase mb-1">Linkedin</span>
+                            <a href="https://linkedin.com/company/origen-consultora" target="_blank" class="text-sm font-medium text-white hover:text-origen-cyan transition-colors">linkedin.com/company/origen</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-12 text-[10px] tracking-widest text-gray-600 text-center uppercase">
+                    Hecho con criterio estructural para empresas reales.
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Datos y lógica de los Casos de Éxito e interactividad -->
+    <script>
+        // Array de datos completo de los 6 casos de éxito
+        const successCases = [
+            {
+                title: "Caso Satelital / Nuclear",
+                rubro: "Satelital - Nuclear",
+                loc: "Bariloche, RN",
+                duration: "2023 - 2024",
+                keyMethod: "5S & Auditorías Kamishibai",
+                problem: "Falta de hábitos estandarizados de orden que comprometían los estrictos controles de calidad requeridos en el rubro nuclear y satelital. Necesitaban optimizar la gestión del depósito central antes de afrontar una mudanza integral de instalaciones.",
+                transformation: "Diseño de la estrategia de gerenciamiento de la mejora. Implementación de dinámicas 5S personalizadas en 4 unidades funcionales. Diseño y acompañamiento diario de auditorías de control visual estructuradas mediante tableros Kamishibai.",
+                impact: "Incorporación autónoma de hábitos de orden por parte de los operarios calificados. Se logró un espacio de trabajo delimitado con absoluta fluidez de materiales, comunicación óptima inter-áreas sin duplicidad de tareas y una base metodológica lista para el traslado.",
+                graphicType: "spider"
+            },
+            {
+                title: "Optimización y Seguridad del Paciente",
+                rubro: "Salud",
+                loc: "Provincia de Neuquén",
+                duration: "2023",
+                keyMethod: "Kaizen / Ciclo PDCA",
+                problem: "Dificultad en la administración y gestión eficiente de la dosis diaria de medicamentos a pacientes hospitalizados. Altos tiempos operativos por exceso de burocracia, falta de comunicación efectiva entre Farmacia y Enfermería, y elevado índice de reprocesos.",
+                transformation: "Formación en filosofía Kaizen y aplicación de ciclo de resolución de problemas PDCA. Mapeo y rediseño completo del proceso de dispensación de dosis diaria. Creación de un sistema de cartelería y concientización visual directa sobre el stock sobrante.",
+                impact: "Disminución drástica de los tiempos de espera y entrega de dosis. Se estandarizó el proceso reduciendo a cero los errores críticos de medicación, optimizando el traslado y sentando las bases como caso testigo de mejora continua para toda la provincia.",
+                graphicType: "ishikawa"
+            },
+            {
+                title: "Relevamiento de Entramado Productivo Local",
+                rubro: "Políticas Públicas",
+                loc: "San Miguel, Buenos Aires",
+                duration: "2025 - 2026",
+                keyMethod: "Estadística y Tableros de Control",
+                problem: "Falta de información centralizada y precisa sobre las necesidades reales de recursos humanos, talento técnico y brecha tecnológica del sector industrial para el diseño efectivo de políticas públicas y programas de desarrollo.",
+                transformation: "Diseño y ejecución de una encuesta estructural para una muestra representativa de industrias locales. Análisis riguroso de variables clave. Confección de tableros de control ejecutivos interactivos para la toma de decisiones municipales.",
+                impact: "Entendimiento cuantitativo y cualitativo de 45 industrias clave que representan 2027 puestos de trabajo directos. Se identificaron las principales brechas de perfiles críticos permitiendo enfocar las currículas locales hacia la inserción laboral real.",
+                graphicType: "dashboard"
+            },
+            {
+                title: "Diseño de Layout Eficiente y Logística",
+                rubro: "Distribución de Electricidad",
+                loc: "CABA",
+                duration: "2025",
+                keyMethod: "Layout / Procesos Logísticos",
+                problem: "La empresa sufría demoras reiteradas en el despacho de pedidos y almacenamiento debido a un plano físico ineficiente (recorridos cruzados) que provocaba cuellos de botella en la recepción del depósito y falta de claridad de roles operativos.",
+                transformation: "Diseño de una propuesta de Layout optimizada para depósitos. Mapeo de flujos operativos y diseño de un flujograma ergonómico con delimitaciones claras de sectores. Diseño de puestos de trabajo modulares de preparación de pedidos.",
+                impact: "Aumento de la productividad logística, agilización del control de entrada de productos y reducción del retrabajo operativo. Estructuración transparente de las mallas horarias, facilitando un organigrama funcional coherente con el crecimiento del volumen.",
+                graphicType: "layout"
+            },
+            {
+                title: "Migración a Nube e Integración de Datos",
+                rubro: "Construcción y Obras",
+                loc: "CABA",
+                duration: "2025",
+                keyMethod: "Sistemas Integrados / Procesos",
+                problem: "La gestión de obra operaba en silos, con datos fragmentados en planillas Excel offline guardadas en computadoras locales y exceso de papeles. El reporte de certificación demoraba hasta 10 días, imposibilitando la toma de decisiones rápidas.",
+                transformation: "Rediseño completo de procesos administrativos de control. Definición de roles y responsabilidades. Migración ordenada de base de datos a un entorno integrado de almacenamiento en la nube, con automatización de presupuestos y centralización de tesorería.",
+                impact: "Pasaje de una gestión puramente reactiva a una proactiva. Certificaciones de obra automáticas actualizadas en tiempo real. Mayor seguridad digital al erradicar las planillas volátiles, eliminando el error humano en los cálculos presupuestarios.",
+                graphicType: "cloud"
+            },
+            {
+                title: "Gestión de No Calidad y Tableros SKU",
+                rubro: "Neumática e Industrial",
+                loc: "Lanús, Buenos Aires",
+                duration: "2026",
+                keyMethod: "Tableros de Control / Estructuración",
+                problem: "Operación no estandarizada que generaba una tasa alta de productos defectuosos y retrasos en despachos por falta de control preciso sobre el stock y las mallas del proceso comercial, derivando en un costo de No Calidad no cuantificado.",
+                transformation: "Confección del organigrama formal y descripciones detalladas de puesto. Rediseño del flujo comercial con adopción estructurada de CRM. Construcción de tableros de control integrados que rastrean variables críticas de venta y stock (SKU).",
+                impact: "Cuantificación y reducción del costo de No Calidad (ahorros directos controlados). Mayor eficiencia del equipo comercial gracias a la definición de procesos de reposición sugerida de materiales críticos y un tablero de control dinámico.",
+                graphicType: "neumatic"
+            }
+        ];
+
+        let activeCaseIndex = 0;
+
+        // Función para cambiar de Caso de Éxito
+        function switchCase(index) {
+            activeCaseIndex = index;
+            
+            // Actualizar botones de pestañas
+            const tabs = document.querySelectorAll('.case-tab');
+            tabs.forEach((tab, i) => {
+                if (i === index) {
+                    tab.classList.add('active-tab');
+                } else {
+                    tab.classList.remove('active-tab');
+                }
+            });
+
+            // Obtener el caso actual
+            const current = successCases[index];
+
+            // Inyectar datos textuales
+            document.getElementById('case-title').innerText = current.title;
+            document.getElementById('case-meta-rubro').innerText = current.rubro;
+            document.getElementById('case-meta-loc').innerText = current.loc;
+            document.getElementById('case-problem').innerText = current.problem;
+            document.getElementById('case-transformation').innerText = current.transformation;
+            document.getElementById('case-impact').innerText = current.impact;
+            document.getElementById('case-meta-duration').innerText = current.duration;
+            document.getElementById('case-meta-key').innerText = current.keyMethod;
+
+            // Inyectar representación visual interactiva correspondiente
+            const graphicContainer = document.getElementById('case-interactive-graphic');
+            graphicContainer.innerHTML = ''; // Limpiar gráfico anterior
+
+            if (current.graphicType === "spider") {
+                // Gráfico de radar SVG animado
+                graphicContainer.innerHTML = `
+                    <svg viewBox="0 0 200 200" class="w-full max-h-[220px]">
+                        <!-- Círculos de cuadrícula de radar -->
+                        <circle cx="100" cy="100" r="80" stroke="#e5e7eb" stroke-dasharray="2,2" fill="none"/>
+                        <circle cx="100" cy="100" r="60" stroke="#e5e7eb" stroke-dasharray="2,2" fill="none"/>
+                        <circle cx="100" cy="100" r="40" stroke="#e5e7eb" stroke-dasharray="2,2" fill="none"/>
+                        <circle cx="100" cy="100" r="20" stroke="#e5e7eb" stroke-dasharray="2,2" fill="none"/>
+                        
+                        <!-- Ejes -->
+                        <line x1="100" y1="20" x2="100" y2="180" stroke="#d1d5db" stroke-width="1"/>
+                        <line x1="20" y1="100" x2="180" y2="100" stroke="#d1d5db" stroke-width="1"/>
+                        
+                        <!-- Etiquetas de radar -->
+                        <text x="100" y="15" text-anchor="middle" font-size="7" fill="#6b7280" font-weight="bold">ÁREA 1</text>
+                        <text x="185" y="102" text-anchor="start" font-size="7" fill="#6b7280" font-weight="bold">ÁREA 2</text>
+                        <text x="100" y="190" text-anchor="middle" font-size="7" fill="#6b7280" font-weight="bold">ÁREA 3</text>
+                        <text x="15" y="102" text-anchor="end" font-size="7" fill="#6b7280" font-weight="bold">ÁREA 4</text>
+                        
+                        <!-- Área de auditoría anterior (gris) -->
+                        <polygon points="100,50 140,100 100,130 70,100" fill="#9ca3af" fill-opacity="0.3" stroke="#9ca3af" stroke-width="1.5"/>
+                        
+                        <!-- Área de auditoría post Origen (Verde/Cian de la marca) -->
+                        <polygon points="100,25 170,100 100,175 30,100" fill="#02adc3" fill-opacity="0.4" stroke="#02adc3" stroke-width="2" class="animate-pulse"/>
+                        
+                        <legend x="20" y="20">
+                            <circle cx="25" cy="165" r="3" fill="#02adc3" stroke="#02adc3" stroke-width="1"/>
+                            <text x="32" y="167" font-size="6" fill="#352c2d">Auditoría 5S Lograda</text>
+                        </legend>
+                    </svg>
+                `;
+            } else if (current.graphicType === "ishikawa") {
+                // Diagrama de Ishikawa interactivo simplificado
+                graphicContainer.innerHTML = `
+                    <div class="flex flex-col items-center w-full">
+                        <svg viewBox="0 0 240 140" class="w-full max-h-[190px]">
+                            <!-- Espina Central -->
+                            <line x1="10" y1="70" x2="200" y2="70" stroke="#352c2d" stroke-width="3" />
+                            <polygon points="200,60 220,70 200,80" fill="#352c2d" />
+                            <text x="210" y="90" font-size="7" fill="#e42320" font-weight="bold" text-anchor="middle">MEJORA CONTINUA</text>
+
+                            <!-- Espinas Superiores -->
+                            <line x1="60" y1="20" x2="90" y2="70" stroke="#02adc3" stroke-width="2" />
+                            <text x="50" y="15" font-size="7" fill="#352c2d" font-weight="bold">PROCESOS</text>
+
+                            <line x1="130" y1="20" x2="160" y2="70" stroke="#02adc3" stroke-width="2" />
+                            <text x="125" y="15" font-size="7" fill="#352c2d" font-weight="bold">PERSONAS</text>
+
+                            <!-- Espinas Inferiores -->
+                            <line x1="60" y1="120" x2="90" y2="70" stroke="#02adc3" stroke-width="2" />
+                            <text x="45" y="128" font-size="7" fill="#352c2d" font-weight="bold">EQUIPO</text>
+
+                            <line x1="130" y1="120" x2="160" y2="70" stroke="#02adc3" stroke-width="2" />
+                            <text x="120" y="128" font-size="7" fill="#352c2d" font-weight="bold">MATERIALES</text>
+
+                            <!-- Mini notas flotantes interactivas -->
+                            <circle cx="80" cy="50" r="5" fill="#e42320" class="cursor-pointer hover:scale-125 transition-transform" onclick="alert('Traba operativa resuelta con mapeo PDCA y definición de estándares')"/>
+                            <circle cx="150" cy="50" r="5" fill="#e42320" class="cursor-pointer hover:scale-125 transition-transform" onclick="alert('Concientización y eliminación de reprocesos logrados con el equipo')"/>
+                        </svg>
+                        <span class="text-[9px] text-gray-400 mt-2 italic">Toca los nodos rojos para ver el análisis de causas raíz</span>
+                    </div>
+                `;
+            } else if (current.graphicType === "dashboard") {
+                // Indicadores del Relevamiento
+                graphicContainer.innerHTML = `
+                    <div class="grid grid-cols-2 gap-3 w-full text-center">
+                        <div class="bg-white p-3 border border-gray-100 rounded-sm shadow-sm">
+                            <span class="block text-2xl font-bold text-origen-text">45</span>
+                            <span class="block text-[8px] uppercase tracking-wider text-gray-500 font-semibold">Muestra Efectiva</span>
+                        </div>
+                        <div class="bg-white p-3 border border-gray-100 rounded-sm shadow-sm">
+                            <span class="block text-2xl font-bold text-origen-cyan">2027</span>
+                            <span class="block text-[8px] uppercase tracking-wider text-gray-500 font-semibold">Empleados Directos</span>
+                        </div>
+                        <div class="bg-white p-3 border border-gray-100 rounded-sm shadow-sm">
+                            <span class="block text-2xl font-bold text-origen-red">42.2%</span>
+                            <span class="block text-[8px] uppercase tracking-wider text-gray-500 font-semibold">Con RRHH Formal</span>
+                        </div>
+                        <div class="bg-white p-3 border border-gray-100 rounded-sm shadow-sm">
+                            <span class="block text-2xl font-bold text-[#02adc3]">68.8%</span>
+                            <span class="block text-[8px] uppercase tracking-wider text-gray-500 font-semibold">Software de Gestión</span>
+                        </div>
+                        <div class="col-span-2 bg-white p-2 border border-gray-100 rounded-sm">
+                            <span class="block text-[8px] text-gray-400 uppercase tracking-widest font-bold mb-1">Perfiles Clave Más Solicitados</span>
+                            <div class="flex justify-around gap-1">
+                                <span class="bg-origen-bg px-2 py-1 rounded text-[10px] text-origen-red font-semibold">Soldadores</span>
+                                <span class="bg-origen-bg px-2 py-1 rounded text-[10px] text-origen-cyan font-semibold">Ing. Industriales</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (current.graphicType === "layout") {
+                // Blueprint de layouts de almacenes
+                graphicContainer.innerHTML = `
+                    <svg viewBox="0 0 200 150" class="w-full max-h-[220px] bg-white border border-gray-100 p-2">
+                        <!-- Depósitos -->
+                        <rect x="10" y="20" width="80" height="110" fill="#f9f6ef" stroke="#02adc3" stroke-width="1.5" />
+                        <text x="50" y="35" text-anchor="middle" font-size="7" font-weight="bold" fill="#352c2d">Depósito Actual 1</text>
+                        
+                        <rect x="110" y="20" width="80" height="110" fill="#f9f6ef" stroke="#02adc3" stroke-width="1.5" />
+                        <text x="150" y="35" text-anchor="middle" font-size="7" font-weight="bold" fill="#352c2d">Depósito Actual 2</text>
+                        
+                        <!-- Estanterías -->
+                        <rect x="20" y="50" width="10" height="60" fill="#352c2d" opacity="0.3" />
+                        <rect x="40" y="50" width="10" height="60" fill="#352c2d" opacity="0.3" />
+                        
+                        <rect x="130" y="50" width="10" height="60" fill="#02adc3" opacity="0.5" />
+                        <rect x="150" y="50" width="10" height="60" fill="#02adc3" opacity="0.5" />
+
+                        <!-- Flechas de Circulación Unificada -->
+                        <path d="M 55,110 Q 100,140 145,110" fill="none" stroke="#e42320" stroke-width="1.5" stroke-dasharray="3,3" marker-end="url(#arrow)" />
+                        <text x="100" y="138" text-anchor="middle" font-size="6" fill="#e42320" font-weight="bold">Ruta de Picking Optimizada</text>
+
+                        <!-- Marcador de flecha -->
+                        <defs>
+                            <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                                <path d="M 0 0 L 10 5 L 0 10 z" fill="#e42320" />
+                            </marker>
+                        </defs>
+                    </svg>
+                `;
+            } else if (current.graphicType === "cloud") {
+                // Fragmentación vs Integración Nube
+                graphicContainer.innerHTML = `
+                    <div class="flex flex-col gap-4 w-full justify-center">
+                        <div class="flex items-center justify-between p-3 bg-red-50 border-l-4 border-origen-red rounded-sm">
+                            <div class="text-left">
+                                <span class="block text-xs font-bold text-origen-text uppercase">Silos Fragmentados</span>
+                                <span class="text-[10px] text-gray-500">Excel offline local + papel</span>
+                            </div>
+                            <span class="text-xs font-bold text-origen-red">Demora +10 días</span>
+                        </div>
+                        
+                        <div class="flex justify-center my-1">
+                            <svg class="w-6 h-6 text-origen-text opacity-50 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 13l-7 7-7-7m14-6l-7 7-7-7"></path>
+                            </svg>
+                        </div>
+
+                        <div class="flex items-center justify-between p-3 bg-cyan-50 border-l-4 border-origen-cyan rounded-sm">
+                            <div class="text-left">
+                                <span class="block text-xs font-bold text-origen-text uppercase">Integración en la Nube</span>
+                                <span class="text-[10px] text-gray-500">Sistemas vinculados y automatizados</span>
+                            </div>
+                            <span class="text-xs font-bold text-origen-cyan">En tiempo real</span>
+                        </div>
+                    </div>
+                `;
+            } else if (current.graphicType === "neumatic") {
+                // Panel de control de SKUs e indicadores de costos
+                graphicContainer.innerHTML = `
+                    <div class="flex flex-col gap-3 w-full bg-white p-3 rounded border border-gray-100">
+                        <span class="text-[8px] font-bold text-gray-400 uppercase tracking-widest text-center">Dashboard de Gestión de No Calidad</span>
+                        
+                        <!-- Caja de Costo NC Real -->
+                        <div class="bg-red-50 p-3 rounded-sm text-center">
+                            <span class="block text-2xl font-bold text-origen-text">$374.150,00</span>
+                            <span class="block text-[8px] uppercase tracking-wider text-origen-red font-semibold">Costo NC Detectado y Controlado</span>
+                        </div>
+
+                        <!-- Mini gráfico de SKUs -->
+                        <div class="flex justify-between items-end h-16 pt-2 border-b border-gray-100 px-4">
+                            <div class="w-4 bg-origen-text opacity-20 h-6 rounded-t-sm" title="Categoría A"></div>
+                            <div class="w-4 bg-origen-text opacity-50 h-12 rounded-t-sm" title="Categoría B"></div>
+                            <div class="w-4 bg-origen-cyan h-16 rounded-t-sm animate-pulse" title="Categoría Crítica"></div>
+                            <div class="w-4 bg-origen-red h-8 rounded-t-sm" title="Categoría D"></div>
+                        </div>
+                        <div class="flex justify-between text-[7px] text-gray-400 px-1">
+                            <span>Stock A</span>
+                            <span>Stock B</span>
+                            <span class="text-origen-cyan font-bold">Stock Crítico</span>
+                            <span>Stock D</span>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // 1. Configurar Intersection Observer para animaciones de entrada
+            const observerOptions = {
+                root: document.getElementById('main-container'),
+                rootMargin: '0px',
+                threshold: 0.12
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                    }
+                });
+            }, observerOptions);
+
+            const revealElements = document.querySelectorAll('.reveal-element');
+            revealElements.forEach(el => observer.observe(el));
+
+
+            // 2. Generación dinámica de los Puntos de Navegación Lateral (Dots)
+            const sections = document.querySelectorAll('.dossier-page');
+            const navDotsContainer = document.getElementById('nav-dots');
+            const mainContainer = document.getElementById('main-container');
+
+            sections.forEach((section, index) => {
+                const dot = document.createElement('div');
+                dot.classList.add('nav-dot');
+                if (index === 0) dot.classList.add('active');
+                
+                // Click en los puntos laterales navega a la sección
+                dot.addEventListener('click', () => {
+                    section.scrollIntoView({ behavior: 'smooth' });
+                });
+                
+                navDotsContainer.appendChild(dot);
+            });
+
+            const dots = document.querySelectorAll('.nav-dot');
+
+            // Actualizar el punto activo al hacer Scroll
+            mainContainer.addEventListener('scroll', () => {
+                let current = '';
+                
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    if (mainContainer.scrollTop >= sectionTop - mainContainer.clientHeight / 2.2) {
+                        current = section.getAttribute('id');
+                    }
+                });
+
+                dots.forEach((dot, index) => {
+                    dot.classList.remove('active');
+                    if (sections[index].getAttribute('id') === current) {
+                        dot.classList.add('active');
+                    }
+                });
+            });
+            
+            // Inicializar el primer caso de éxito en la pestaña
+            switchCase(0);
+            
+            // Forzar detección de scroll inicial
+            mainContainer.dispatchEvent(new Event('scroll'));
+        });
+    </script>
+</body>
+</html>
